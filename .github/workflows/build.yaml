@@ -1,0 +1,85 @@
+name: Build docker image
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+env:
+  SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  SSH_HOST: 34.214.210.14
+  SSH_PORT: 22
+  GITHUB_REPO: "front_team_09"
+  DOCKER_CONTAINER_NAME: "front_team_09"
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+  DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+jobs:
+  build:
+    # runs-on: ubuntu-22.04
+    runs-on: self-hosted
+    steps:
+      - name: GitHub actions Workspace Cleaner
+        uses: jstone28/runner-workspace-cleaner@v1.0.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: [build]
+    steps:
+      - name: Install ssh-agent
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add ssh key
+        run: echo "${{ env.SSH_KEY }}" | ssh-add -
+
+      - name: SSH recreate Docker container
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          script: |
+            echo ${{ env.DOCKER_HUB_PASSWORD }} | docker login ghcr.io -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
+            docker stop ${{ env.DOCKER_CONTAINER_NAME }}
+            docker rm ${{ env.DOCKER_CONTAINER_NAME }}
+            docker rmi ghcr.io/itgenuni/${{ env.DOCKER_CONTAINER_NAME }}:main
+            docker pull ghcr.io/itgenuni/${{ env.GITHUB_REPO }}:main
+            docker run -itd --name ${{ env.DOCKER_CONTAINER_NAME }} -p 80:3000 -e REACT_APP_API_URL="http://34.214.210.14" -e REACT_APP_MY_ENV="production" ghcr.io/itgenuni/${{ env.DOCKER_CONTAINER_NAME }}:main
+          host: ${{ env.SSH_HOST }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ env.SSH_PORT }}
+
+      # - name: Docker logout
+      #   uses: docker/logout-action@v1

@@ -1,0 +1,45 @@
+.herro {
+  margin: 0 auto;
+  padding-top: 200px;
+  width: 1440px;
+  overflow: hidden;
+}
+
+.wrapper-herro {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.content-block {
+  flex: 0 0 40%;
+
+  h1 {
+    font-weight: 500;
+    @include fluidFontSize(35px, 56px, 480px, 1280px, 40px);
+    line-height: 113%;
+  }
+
+  div:last-child {
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
+}
+
+.img-block {
+  position: relative;
+
+  img {
+    max-width: 100%;
+  }
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-button {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 10px;
+}

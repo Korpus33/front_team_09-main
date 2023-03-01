@@ -1,0 +1,55 @@
+@import '../public/assets/styles/varibles';
+@import '../public/assets/styles/syle-button.scss';
+@import '../public/assets/styles/hero-block.scss';
+@import '../public/assets/styles/currentNeeds.scss';
+@import '../public/assets/styles/howYouCanHelp.scss';
+@import '../public/assets/styles/someStats.scss';
+@import '../public/assets/styles/support.scss';
+@import '../public/assets/styles/successfulStories.scss';
+@import '../public/assets/styles/swiper.scss';
+@import '../public/assets/styles/curruntSwiper.scss';
+@import '../public/assets/styles/footer';
+@import '../public/assets/styles/successfulStoriesPopap';
+@import '../public/assets/styles/successfulStoriesPopapSwiper';
+@import '../public/assets/styles/currentNeedsPopap';
+@import '../public/assets/styles/successfulStoriesPage';
+@import '../public/assets/styles/currentNeedsPage.scss';
+@import '../public/assets/styles/ourGoal.scss';
+@import '../public/assets/styles/ourTeams.scss';
+@import '../public/assets/styles/contacts.scss';
+@import '../public/assets/styles/slider.scss';
+@import '../public/assets/styles/formPopap.scss';
+@import '../public/assets/styles/documentPage.scss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+body {
+  height: 100%;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  color: #000000;
+  background-color: #f1f1f1;
+}
+
+._container {
+  max-width: 1240px;
+  margin: 0px auto;
+  padding: 0 15px;
+}
+
+.layout-wrapper {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.wrapper-outlet {
+  flex-grow: 1;
+}
+
+.layout-wrapper__footer {
+  flex-shrink: 0;
+}
